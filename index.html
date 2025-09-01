@@ -53,13 +53,12 @@
     /* Animated background */
     .bg-animation {
       position: fixed;
-      top: -10%;
-      left: -10%;
-      width: 120%;
-      height: 120%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       z-index: -1;
       background: 
-        var(--bg),
         radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3), transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3), transparent 50%),
         radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.2), transparent 50%);
@@ -857,127 +856,6 @@
       transform: rotate(180deg) scale(1.1);
     }
 
-    /* iPhone-specific enhancements */
-    @supports (-webkit-touch-callout: none) {
-      /* Device motion and orientation features */
-      .tilt-container {
-        transform-style: preserve-3d;
-        transition: transform 0.1s ease-out;
-      }
-      
-      /* Haptic feedback visual cues */
-      .haptic-ready {
-        position: relative;
-      }
-      
-      .haptic-ready::after {
-        content: '';
-        position: absolute;
-        inset: -2px;
-        background: linear-gradient(45deg, var(--brand), var(--purple));
-        border-radius: inherit;
-        z-index: -1;
-        opacity: 0;
-        transition: opacity 0.2s ease;
-      }
-      
-      .haptic-active::after {
-        opacity: 0.3;
-        animation: hapticPulse 0.3s ease-out;
-      }
-      
-      @keyframes hapticPulse {
-        0% { transform: scale(1); opacity: 0.3; }
-        50% { transform: scale(1.05); opacity: 0.6; }
-        100% { transform: scale(1); opacity: 0.3; }
-      }
-      
-      /* Shake animation for interactions */
-      .shake {
-        animation: shake 0.5s ease-in-out;
-      }
-      
-      @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-5px); }
-        75% { transform: translateX(5px); }
-      }
-      
-      /* Double tap zoom areas */
-      .zoom-area {
-        transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      }
-      
-      .zoom-area.zoomed {
-        transform: scale(1.1);
-        z-index: 10;
-      }
-    }
-
-    /* Touch-specific cursor effects for mobile */
-    @media (hover: none) and (pointer: coarse) {
-      .touch-bubble {
-        position: absolute;
-        width: 60px;
-        height: 60px;
-        background: radial-gradient(circle, var(--brand), transparent);
-        border-radius: 50%;
-        pointer-events: none;
-        opacity: 0;
-        transform: scale(0);
-        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      }
-      
-      .touch-bubble.active {
-        opacity: 0.6;
-        transform: scale(2);
-        animation: touchRipple 0.8s ease-out forwards;
-      }
-      
-      @keyframes touchRipple {
-        0% { opacity: 0.6; transform: scale(0); }
-        50% { opacity: 0.4; transform: scale(1.5); }
-        100% { opacity: 0; transform: scale(2); }
-      }
-      
-      /* Swipe indicators */
-      .swipe-hint {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        color: var(--muted);
-        font-size: 0.9rem;
-        opacity: 0.7;
-        animation: swipeHint 2s ease-in-out infinite;
-      }
-      
-      @keyframes swipeHint {
-        0%, 100% { transform: translateX(-50%) translateY(0); }
-        50% { transform: translateX(-50%) translateY(-5px); }
-      }
-    }
-
-    /* iOS Safari specific fixes */
-    @supports (-webkit-appearance: none) {
-      .ios-safe-area {
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-      }
-      
-      /* Fix for iOS scrolling */
-      body {
-        -webkit-overflow-scrolling: touch;
-      }
-      
-      /* iOS status bar styling */
-      .site-header {
-        padding-top: max(16px, env(safe-area-inset-top));
-      }
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
       .header-content {
@@ -1008,141 +886,6 @@
       .cta-row {
         flex-direction: column;
       }
-      
-      /* Mobile-specific enhancements */
-      .project-card {
-        border-radius: 16px;
-        margin-bottom: 16px;
-      }
-      
-      .btn {
-        min-height: 44px; /* iOS touch target size */
-        padding: 12px 24px;
-      }
-      
-      /* Touch-friendly spacing */
-      .chip {
-        min-height: 44px;
-        padding: 12px 20px;
-      }
-      
-      /* Swipe gestures hint */
-      .projects-grid::after {
-        content: '← Swipe for more projects →';
-        display: block;
-        text-align: center;
-        color: var(--muted);
-        font-size: 0.85rem;
-        margin-top: 16px;
-        opacity: 0.6;
-      }
-    }
-
-    /* Interactive Constellation */
-    .constellation-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
-      z-index: 10000;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-
-    .constellation-overlay.active {
-      display: block;
-      opacity: 1;
-    }
-
-    #constellationCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      cursor: crosshair;
-    }
-
-    .constellation-ui {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      right: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      pointer-events: none;
-    }
-
-    .constellation-close {
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid var(--brand);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      color: var(--brand);
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-      pointer-events: auto;
-    }
-
-    .constellation-close:hover {
-      background: var(--brand);
-      color: #000;
-      transform: scale(1.1);
-    }
-
-    .constellation-info {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--brand);
-      border-radius: 15px;
-      padding: 15px 20px;
-      backdrop-filter: blur(10px);
-      color: var(--fg);
-      font-family: 'Monaco', monospace;
-    }
-
-    .constellation-hint {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-top: 5px;
-    }
-
-    .constellation-trigger {
-      position: fixed;
-      bottom: 100px;
-      right: 32px;
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, var(--purple), var(--brand));
-      border: none;
-      border-radius: 50%;
-      color: #000;
-      font-size: 1.5rem;
-      cursor: pointer;
-      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.3);
-      transition: all 0.3s ease;
-      z-index: 1000;
-    }
-
-    .constellation-trigger:hover {
-      transform: translateY(-4px) scale(1.1);
-      box-shadow: 0 12px 40px rgba(139, 92, 246, 0.4);
-    }
-
-    @keyframes constellationGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
-      50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6); }
-    }
-
-    .constellation-trigger.glow {
-      animation: constellationGlow 2s ease-in-out infinite;
     }
 
     /* Loading animation */
@@ -1180,17 +923,22 @@
   </style>
 </head>
 <body>
+  <!-- Loading Screen -->
   <div class="loading" id="loading">
     <div class="loading-spinner"></div>
   </div>
 
+  <!-- Scroll Progress -->
   <div class="scroll-indicator" id="scrollIndicator"></div>
 
+  <!-- Animated Background -->
   <div class="bg-animation"></div>
   <div class="particles" id="particles"></div>
   
+  <!-- Interactive Cursor Effects -->
   <div class="cursor-effects" id="cursorEffects"></div>
 
+  <!-- Header -->
   <header class="site-header" id="header">
     <div class="header-content">
       <div class="brand">
@@ -1207,6 +955,7 @@
     </div>
   </header>
 
+  <!-- Hero Section with 3D -->
   <section class="hero">
     <canvas id="scene"></canvas>
     <div class="hero-content">
@@ -1226,6 +975,7 @@
   </section>
 
   <main class="container">
+    <!-- About -->
     <section id="about" class="section">
       <div class="card">
         <h3>About Me</h3>
@@ -1236,6 +986,7 @@
           My journey started with curiosity about how systems work under the hood, leading me to explore everything from network protocols to database optimization. I enjoy the challenge of writing clean, maintainable code and believe in the power of well-documented, thoughtful software architecture.
         </p>
         
+        <!-- Interactive Console -->
         <div class="console">
           <div class="console-header">
             <div class="console-controls">
@@ -1246,11 +997,13 @@
             <div class="console-title">~/dylan-profile --status</div>
           </div>
           <div class="console-body" id="consoleBody">
-            </div>
+            <!-- Content will be animated in -->
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- Projects -->
     <section id="projects" class="section">
       <div class="section-head">
         <h3>Featured Projects</h3>
@@ -1264,6 +1017,7 @@
       </div>
 
       <ul class="projects-grid">
+        <!-- Enhanced To-Do App -->
         <li class="project-card" data-tags="python,web">
           <div class="project-header">
             <div class="project-icon">📝</div>
@@ -1284,6 +1038,7 @@
           </div>
         </li>
 
+        <!-- Network Security Tool -->
         <li class="project-card" data-tags="python,security">
           <div class="project-header">
             <div class="project-icon">🛡️</div>
@@ -1304,6 +1059,7 @@
           </div>
         </li>
 
+        <!-- SQL Analytics Platform -->
         <li class="project-card" data-tags="sql,web">
           <div class="project-header">
             <div class="project-icon">📊</div>
@@ -1324,6 +1080,7 @@
           </div>
         </li>
 
+        <!-- Portfolio Website -->
         <li class="project-card" data-tags="web">
           <div class="project-header">
             <div class="project-icon">🎨</div>
@@ -1344,6 +1101,7 @@
           </div>
         </li>
 
+        <!-- AI Project -->
         <li class="project-card" data-tags="ai,python">
           <div class="project-header">
             <div class="project-icon">🤖</div>
@@ -1366,10 +1124,12 @@
       </ul>
     </section>
 
+    <!-- Skills -->
     <section id="skills" class="section">
       <div class="card">
         <h3>Technical Expertise</h3>
         <div class="skills-grid">
+          <!-- Programming Languages -->
           <div class="skill-category">
             <h4>🔧 Languages & Frameworks</h4>
             <div class="skill-bars">
@@ -1400,6 +1160,7 @@
             </div>
           </div>
 
+          <!-- Tools & Technologies -->
           <div class="skill-category">
             <h4>⚡ Tools & Platforms</h4>
             <div class="skill-bars">
@@ -1433,6 +1194,7 @@
       </div>
     </section>
 
+    <!-- Experience Timeline -->
     <section id="experience" class="section">
       <div class="card">
         <h3>Experience & Education</h3>
@@ -1451,6 +1213,7 @@
       </div>
     </section>
 
+    <!-- Contact -->
     <section id="contact" class="section">
       <div class="card">
         <h3>Let's Connect</h3>
@@ -1487,40 +1250,19 @@
 
   <button id="toTop" class="to-top" aria-label="Back to top">↑</button>
 
-  <button id="constellationTrigger" class="constellation-trigger glow" aria-label="Interactive Constellation" title="Create your own constellation!">✨</button>
-
-  <div class="constellation-overlay" id="constellationOverlay">
-    <canvas id="constellationCanvas"></canvas>
-    <div class="constellation-ui">
-      <button class="constellation-close" id="constellationClose">×</button>
-      <div class="constellation-info">
-        <span id="constellationCounter">Stars: 0</span>
-        <div class="constellation-hint">Touch to create stars • Tilt to shift gravity</div>
-      </div>
-    </div>
-  </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // Define isIOS variable at the top
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-
-    // Initial check for loading
+    // Loading screen
     window.addEventListener('load', () => {
       setTimeout(() => {
-        const loadingScreen = document.getElementById('loading');
-        if (loadingScreen) {
-          loadingScreen.classList.add('hidden');
-        }
+        document.getElementById('loading').classList.add('hidden');
       }, 1000);
     });
 
     // Create particles
     function createParticles() {
       const particlesContainer = document.getElementById('particles');
-      if (!particlesContainer) return;
-      const numParticles = isIOS ? 25 : 50;
-      for (let i = 0; i < numParticles; i++) {
+      for (let i = 0; i < 50; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         particle.style.left = Math.random() * 100 + '%';
@@ -1532,6 +1274,8 @@
 
     // Interactive Cursor Effects
     let mouseX = 0, mouseY = 0;
+    let cursorTrails = [];
+    let bubbles = [];
     let isMouseMoving = false;
     let mouseTimeout;
 
@@ -1539,6 +1283,7 @@
       const cursorContainer = document.getElementById('cursorEffects');
       if (!cursorContainer) return;
 
+      // Create bubble on mouse movement
       function createBubble(x, y) {
         const bubble = document.createElement('div');
         bubble.className = 'cursor-bubble';
@@ -1549,10 +1294,11 @@
         
         bubble.style.width = size + 'px';
         bubble.style.height = size + 'px';
-        bubble.style.left = (x - size / 2) + 'px';
-        bubble.style.top = (y - size / 2) + 'px';
+        bubble.style.left = (x - size/2) + 'px';
+        bubble.style.top = (y - size/2) + 'px';
         bubble.style.background = `radial-gradient(circle, ${color}, transparent)`;
         
+        // Set random movement direction
         const randomX = (Math.random() - 0.5) * 200;
         const randomY = -(Math.random() * 150 + 50);
         bubble.style.setProperty('--random-x', randomX + 'px');
@@ -1560,8 +1306,10 @@
         
         cursorContainer.appendChild(bubble);
         
+        // Activate animation
         setTimeout(() => bubble.classList.add('active'), 10);
         
+        // Remove after animation
         setTimeout(() => {
           if (bubble.parentNode) {
             bubble.parentNode.removeChild(bubble);
@@ -1569,6 +1317,7 @@
         }, 4000);
       }
 
+      // Create cursor trail
       function createCursorTrail(x, y) {
         const trail = document.createElement('div');
         trail.className = 'cursor-trail';
@@ -1586,6 +1335,7 @@
         }, 1000);
       }
 
+      // Create ripple effect on click
       function createRipple(x, y) {
         const ripple = document.createElement('div');
         ripple.className = 'ripple';
@@ -1601,28 +1351,34 @@
         }, 600);
       }
 
+      // Mouse move handler
       let bubbleCounter = 0;
       document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
         isMouseMoving = true;
         
+        // Clear timeout
         clearTimeout(mouseTimeout);
         mouseTimeout = setTimeout(() => {
           isMouseMoving = false;
         }, 100);
         
+        // Create cursor trail more frequently
         createCursorTrail(mouseX, mouseY);
         
+        // Create bubbles less frequently for performance
         bubbleCounter++;
-        if (bubbleCounter % 8 === 0) {
+        if (bubbleCounter % 8 === 0) { // Create bubble every 8 mouse moves
           createBubble(mouseX, mouseY);
         }
       });
 
+      // Click handler for ripples
       document.addEventListener('click', (e) => {
         createRipple(e.clientX, e.clientY);
         
+        // Create extra bubbles on click
         for (let i = 0; i < 3; i++) {
           setTimeout(() => {
             createBubble(
@@ -1633,6 +1389,7 @@
         }
       });
 
+      // Add magnetic effect to interactive elements
       const interactiveElements = document.querySelectorAll('.btn, .chip, .project-card');
       interactiveElements.forEach(element => {
         element.addEventListener('mouseenter', (e) => {
@@ -1640,6 +1397,7 @@
           const centerX = rect.left + rect.width / 2;
           const centerY = rect.top + rect.height / 2;
           
+          // Create attraction bubbles
           for (let i = 0; i < 5; i++) {
             setTimeout(() => {
               createBubble(
@@ -1653,7 +1411,8 @@
     }
 
     // Enhanced 3D Scene Setup with mouse interaction
-    let scene, camera, renderer;
+    let scene, camera, renderer, geometry, material, mesh;
+
     function init3D() {
       const canvas = document.getElementById('scene');
       if (!canvas) return;
@@ -1663,6 +1422,7 @@
       renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
 
+      // Create floating geometry
       const geometries = [
         new THREE.BoxGeometry(1, 1, 1),
         new THREE.SphereGeometry(0.7, 32, 32),
@@ -1687,6 +1447,7 @@
         mesh.rotation.x = Math.random() * Math.PI;
         mesh.rotation.y = Math.random() * Math.PI;
         
+        // Store original position for mouse interaction
         mesh.userData.originalX = mesh.position.x;
         mesh.userData.originalY = mesh.position.y;
         mesh.userData.originalZ = mesh.position.z;
@@ -1705,6 +1466,7 @@
           obj.rotation.y += 0.01 + index * 0.001;
           obj.position.y += Math.sin(Date.now() * 0.001 + index) * 0.001;
           
+          // Mouse interaction - objects move away from cursor
           if (isMouseMoving) {
             const mouseInfluence = 0.02;
             const normalizedMouseX = (mouseX / window.innerWidth - 0.5) * 2;
@@ -1716,11 +1478,13 @@
             obj.position.x += (distanceX - obj.position.x) * mouseInfluence;
             obj.position.y += (distanceY - obj.position.y) * mouseInfluence;
           } else {
+            // Return to original position
             obj.position.x += (obj.userData.originalX - obj.position.x) * 0.02;
             obj.position.y += (obj.userData.originalY - obj.position.y) * 0.02;
           }
         });
 
+        // Smooth camera movement based on mouse
         const targetX = mouseX * 0.001;
         const targetY = -mouseY * 0.001;
         camera.position.x += (targetX - camera.position.x) * 0.05;
@@ -1732,6 +1496,13 @@
       animate();
     }
 
+    // Mouse interaction - removed duplicate
+    document.addEventListener('mousemove', (e) => {
+      // This is now handled in createCursorEffects()
+      // Keep this for 3D scene but mouseX, mouseY are set in cursor effects
+    });
+
+    // Window resize
     window.addEventListener('resize', () => {
       if (camera && renderer) {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -1810,6 +1581,7 @@
           if (entry.isIntersecting) {
             entry.target.classList.add('revealed');
             
+            // Animate skill bars when skills section is revealed
             if (entry.target.id === 'skills') {
               setTimeout(() => {
                 const skillFills = entry.target.querySelectorAll('.skill-fill');
@@ -1936,619 +1708,35 @@
       });
     });
 
-    // iPhone-specific features
-    let deviceMotionEnabled = false;
-    let touchStartTime = 0;
-    let touchPoints = [];
-    let lastTouchTime = 0;
-
-    function initializeIOSFeatures() {
-      if (!isIOS) return;
-
-      if (typeof DeviceOrientationEvent !== 'undefined') {
-        requestDeviceMotionPermission();
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+      createCursorEffects(); // Initialize cursor effects
+      
+      // Check if Three.js is available before initializing 3D
+      if (typeof THREE !== 'undefined') {
+        init3D();
       }
-
-      initializeTouchEffects();
-      initializeSwipeGestures();
-      initializeDoubleTapZoom();
-      initializeHapticEffects();
-      adjustForIOSQuirks();
-    }
-
-    function requestDeviceMotionPermission() {
-      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        // Create backdrop
-        const backdrop = document.createElement('div');
-        backdrop.style.position = 'fixed';
-        backdrop.style.top = '0';
-        backdrop.style.left = '0';
-        backdrop.style.width = '100%';
-        backdrop.style.height = '100%';
-        backdrop.style.background = 'rgba(0, 0, 0, 0.8)';
-        backdrop.style.backdropFilter = 'blur(10px)';
-        backdrop.style.zIndex = '9999';
-        backdrop.style.display = 'flex';
-        backdrop.style.alignItems = 'center';
-        backdrop.style.justifyContent = 'center';
-        backdrop.style.flexDirection = 'column';
-        backdrop.style.gap = '20px';
-        
-        // Create modal container
-        const modal = document.createElement('div');
-        modal.style.background = 'var(--card)';
-        modal.style.border = '2px solid var(--brand)';
-        modal.style.borderRadius = '20px';
-        modal.style.padding = '40px';
-        modal.style.textAlign = 'center';
-        modal.style.maxWidth = '90%';
-        modal.style.boxShadow = '0 20px 60px rgba(0, 212, 255, 0.3)';
-        
-        // Create title
-        const title = document.createElement('h3');
-        title.textContent = '📱 Enhanced iPhone Experience';
-        title.style.color = 'var(--brand)';
-        title.style.marginBottom = '16px';
-        title.style.fontSize = '1.5rem';
-        
-        // Create description
-        const desc = document.createElement('p');
-        desc.textContent = 'Enable device tilt to interact with 3D elements and constellation gravity!';
-        desc.style.color = 'var(--muted)';
-        desc.style.marginBottom = '24px';
-        desc.style.lineHeight = '1.6';
-        
-        const motionBtn = document.createElement('button');
-        motionBtn.textContent = '✨ Enable Tilt Effects';
-        motionBtn.className = 'btn';
-        motionBtn.style.fontSize = '1.1rem';
-        motionBtn.style.padding = '16px 32px';
-        
-        modal.appendChild(title);
-        modal.appendChild(desc);
-        modal.appendChild(motionBtn);
-        backdrop.appendChild(modal);
-        
-        motionBtn.addEventListener('click', () => {
-          DeviceOrientationEvent.requestPermission().then(response => {
-            if (response === 'granted') {
-              enableDeviceMotion();
-              backdrop.remove();
-            } else {
-              // Show error message
-              desc.textContent = 'Permission denied. You can still use all other features!';
-              desc.style.color = 'var(--accent)';
-              motionBtn.textContent = 'Continue Without Tilt';
-              motionBtn.addEventListener('click', () => backdrop.remove());
-            }
-          });
+      
+      setupRevealAnimations();
+      setupFilters();
+      animateConsole();
+      
+      // Add some interactive hover effects
+      document.querySelectorAll('.project-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.style.transform = 'translateY(-12px) scale(1.02)';
         });
         
-        // Skip button
-        const skipBtn = document.createElement('button');
-        skipBtn.textContent = 'Skip';
-        skipBtn.className = 'btn ghost';
-        skipBtn.style.marginTop = '16px';
-        skipBtn.addEventListener('click', () => backdrop.remove());
-        modal.appendChild(skipBtn);
-        
-        document.body.appendChild(backdrop);
-        
-        // Auto-close after 5 seconds
-        setTimeout(() => {
-          if (backdrop.parentNode) backdrop.remove();
-        }, 5000);
-      } else {
-        enableDeviceMotion();
-      }
-    }
-
-    function enableDeviceMotion() {
-      deviceMotionEnabled = true;
-      
-      window.addEventListener('deviceorientation', (event) => {
-        const { alpha, beta, gamma } = event;
-        
-        document.querySelectorAll('.card, .project-card').forEach(card => {
-          const tiltX = gamma ? gamma * 0.1 : 0;
-          const tiltY = beta ? (beta - 90) * 0.1 : 0;
-          
-          card.style.transform = `perspective(1000px) rotateX(${tiltY}deg) rotateY(${tiltX}deg)`;
-        });
-        
-        if (scene && camera) {
-          camera.position.x += (gamma * 0.001 - camera.position.x) * 0.1;
-          camera.position.y += (beta * 0.001 - camera.position.y) * 0.1;
-        }
-      });
-    }
-
-    function initializeTouchEffects() {
-      const touchContainer = document.getElementById('cursorEffects');
-      
-      document.addEventListener('touchstart', (e) => {
-        Array.from(e.touches).forEach(touch => {
-          createTouchRipple(touch.clientX, touch.clientY);
-        });
-        
-        touchStartTime = Date.now();
-      }, { passive: true });
-      
-      function createTouchRipple(x, y) {
-        const ripple = document.createElement('div');
-        ripple.className = 'touch-bubble';
-        ripple.style.left = (x - 30) + 'px';
-        ripple.style.top = (y - 30) + 'px';
-        
-        touchContainer.appendChild(ripple);
-        
-        setTimeout(() => ripple.classList.add('active'), 10);
-        
-        setTimeout(() => {
-          if (ripple.parentNode) {
-            ripple.parentNode.removeChild(ripple);
-          }
-        }, 800);
-      }
-    }
-
-    function initializeSwipeGestures() {
-      let startX = 0;
-      let startY = 0;
-      let currentFilter = 'all';
-      const filters = ['all', 'python', 'sql', 'web', 'ai'];
-      
-      document.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-      }, { passive: true });
-      
-      document.addEventListener('touchend', (e) => {
-        if (!startX || !startY) return;
-        
-        const endX = e.changedTouches[0].clientX;
-        const endY = e.changedTouches[0].clientY;
-        
-        const deltaX = endX - startX;
-        const deltaY = endY - startY;
-        
-        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
-          const currentIndex = filters.indexOf(currentFilter);
-          let newIndex;
-          
-          if (deltaX > 0) {
-            newIndex = currentIndex > 0 ? currentIndex - 1 : filters.length - 1;
-          } else {
-            newIndex = currentIndex < filters.length - 1 ? currentIndex + 1 : 0;
-          }
-          
-          currentFilter = filters[newIndex];
-          
-          const filterBtn = document.querySelector(`[data-filter="${currentFilter}"]`);
-          if (filterBtn) {
-            filterBtn.click();
-            
-            filterBtn.classList.add('shake');
-            setTimeout(() => filterBtn.classList.remove('shake'), 500);
-          }
-        }
-        
-        startX = 0;
-        startY = 0;
-      }, { passive: true });
-    }
-
-    function initializeDoubleTapZoom() {
-      document.querySelectorAll('.project-card, .skill-category').forEach(element => {
-        let lastTap = 0;
-        
-        element.addEventListener('touchend', (e) => {
-          const currentTime = Date.now();
-          const tapGap = currentTime - lastTap;
-          
-          if (tapGap < 300 && tapGap > 0) {
-            e.preventDefault();
-            
-            element.classList.toggle('zoomed');
-            element.classList.add('zoom-area');
-            
-            triggerHapticFeedback(element);
-            
-            setTimeout(() => {
-              element.classList.remove('zoomed');
-            }, 3000);
-          }
-          
-          lastTap = currentTime;
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'translateY(0) scale(1)';
         });
       });
-    }
-
-    function initializeHapticEffects() {
-      document.querySelectorAll('.btn, .chip').forEach(element => {
-        element.classList.add('haptic-ready');
-        
-        element.addEventListener('touchstart', () => {
-          triggerHapticFeedback(element);
-        }, { passive: true });
-      });
-    }
-
-    function triggerHapticFeedback(element) {
-      element.classList.add('haptic-active');
-      setTimeout(() => element.classList.remove('haptic-active'), 300);
-      
-      if (navigator.vibrate) {
-        navigator.vibrate(10);
-      }
-      
-      try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        gainNode.gain.setValueAtTime(0.01, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05);
-        
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + 0.05);
-      } catch (e) {}
-    }
-
-    function adjustForIOSQuirks() {
-      const viewport = document.querySelector('meta[name=viewport]');
-      if (viewport) {
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover');
-      }
-      
-      document.body.classList.add('ios-safe-area');
-      
-      document.body.style.webkitOverflowScrolling = 'touch';
-      
-      document.querySelectorAll('.btn, .chip, .project-card').forEach(el => {
-        el.style.webkitUserSelect = 'none';
-        el.style.userSelect = 'none';
-      });
-      
-      const style = document.createElement('style');
-      style.textContent = `
-        @media (max-width: 768px) {
-          .btn, .chip { 
-            min-height: 44px; 
-            touch-action: manipulation;
-          }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    function createMobileParticles() {
-      if (!isIOS) return;
-      
-      const container = document.getElementById('particles');
-      if (!container) return;
-      
-      for (let i = 0; i < 25; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 20 + 's';
-        particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
-        
-        particle.addEventListener('touchstart', (e) => {
-          e.preventDefault();
-          particle.style.animation = 'none';
-          particle.style.transform = 'scale(2) rotate(360deg)';
-          particle.style.opacity = '1';
-          
-          setTimeout(() => {
-            particle.style.animation = '';
-            particle.style.transform = '';
-            particle.style.opacity = '';
-          }, 1000);
-        }, { passive: false });
-        
-        container.appendChild(particle);
-      }
-    }
-
-    // Interactive Constellation Implementation
-    class InteractiveConstellation {
-      constructor() {
-        this.canvas = document.getElementById('constellationCanvas');
-        this.ctx = this.canvas.getContext('2d');
-        this.isActive = false;
-        this.stars = [];
-        this.connections = [];
-        this.gravity = { x: 0, y: 0.1 };
-        this.mouse = { x: 0, y: 0 };
-        this.animationId = null;
-        
-        this.setupCanvas();
-        this.setupControls();
-      }
-
-      setupCanvas() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-      }
-
-      setupControls() {
-        // Touch and mouse events
-        this.canvas.addEventListener('touchstart', (e) => {
-          if (!this.isActive) return;
-          e.preventDefault();
-          Array.from(e.touches).forEach(touch => {
-            this.createStar(touch.clientX, touch.clientY);
-          });
-        }, { passive: false });
-
-        this.canvas.addEventListener('click', (e) => {
-          if (!this.isActive) return;
-          this.createStar(e.clientX, e.clientY);
-        });
-
-        this.canvas.addEventListener('mousemove', (e) => {
-          this.mouse.x = e.clientX;
-          this.mouse.y = e.clientY;
-        });
-
-        // Device orientation for iPhone gravity
-        if (isIOS && typeof DeviceOrientationEvent !== 'undefined') {
-          window.addEventListener('deviceorientation', (e) => {
-            if (!this.isActive) return;
-            
-            // Use gamma (left-right tilt) and beta (front-back tilt)
-            this.gravity.x = (e.gamma || 0) * 0.01;
-            this.gravity.y = ((e.beta || 90) - 90) * 0.01 + 0.02;
-          });
-        }
-
-        // Long press to clear constellation
-        let longPressTimer;
-        this.canvas.addEventListener('touchstart', (e) => {
-          longPressTimer = setTimeout(() => {
-            if (navigator.vibrate) navigator.vibrate(100);
-            this.clearConstellation();
-          }, 1000);
-        });
-
-        this.canvas.addEventListener('touchend', () => {
-          clearTimeout(longPressTimer);
-        });
-
-        // Window resize
-        window.addEventListener('resize', () => {
-          if (this.isActive) {
-            this.setupCanvas();
-          }
-        });
-      }
-
-      createStar(x, y) {
-        const star = {
-          x: x,
-          y: y,
-          vx: (Math.random() - 0.5) * 2,
-          vy: (Math.random() - 0.5) * 2,
-          size: Math.random() * 4 + 3, // Larger stars
-          life: 1,
-          decay: Math.random() * 0.001 + 0.0005, // Slower decay
-          color: '#FFD700', // Yellow color
-          twinkle: Math.random() * Math.PI * 2,
-          twinkleSpeed: Math.random() * 0.1 + 0.05
-        };
-
-        this.stars.push(star);
-        
-        // Create connections to nearby stars
-        this.stars.forEach(otherStar => {
-          if (otherStar !== star) {
-            const distance = Math.sqrt(
-              Math.pow(star.x - otherStar.x, 2) + 
-              Math.pow(star.y - otherStar.y, 2)
-            );
-            
-            if (distance < 150 && Math.random() > 0.7) {
-              this.connections.push({
-                star1: star,
-                star2: otherStar,
-                opacity: 0.5
-              });
-            }
-          }
-        });
-
-        // Haptic feedback
-        if (navigator.vibrate) {
-          navigator.vibrate(10);
-        }
-
-        this.updateCounter();
-      }
-
-      updateStars() {
-        this.stars = this.stars.filter(star => {
-          // Apply gravity
-          star.vx += this.gravity.x;
-          star.vy += this.gravity.y;
-          
-          // Apply mouse attraction
-          const mouseDistance = Math.sqrt(
-            Math.pow(star.x - this.mouse.x, 2) + 
-            Math.pow(star.y - this.mouse.y, 2)
-          );
-          
-          if (mouseDistance < 100) {
-            const attraction = 0.002;
-            star.vx += (this.mouse.x - star.x) * attraction;
-            star.vy += (this.mouse.y - star.y) * attraction;
-          }
-          
-          // Update position
-          star.x += star.vx;
-          star.y += star.vy;
-          
-          // Bounce off edges
-          if (star.x <= 0 || star.x >= this.canvas.width) {
-            star.vx *= -0.8;
-            star.x = Math.max(0, Math.min(this.canvas.width, star.x));
-          }
-          if (star.y <= 0 || star.y >= this.canvas.height) {
-            star.vy *= -0.8;
-            star.y = Math.max(0, Math.min(this.canvas.height, star.y));
-          }
-          
-          // Apply friction
-          star.vx *= 0.99;
-          star.vy *= 0.99;
-          
-          // Update life and twinkle
-          star.life -= star.decay;
-          star.twinkle += star.twinkleSpeed;
-          
-          return star.life > 0;
-        });
-        
-        // Clean up dead connections
-        this.connections = this.connections.filter(conn => 
-          this.stars.includes(conn.star1) && this.stars.includes(conn.star2)
-        );
-      }
-
-      draw() {
-        // Clear canvas completely
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        // Draw connections
-        this.connections.forEach(conn => {
-          const distance = Math.sqrt(
-            Math.pow(conn.star1.x - conn.star2.x, 2) + 
-            Math.pow(conn.star1.y - conn.star2.y, 2)
-          );
-          
-          const opacity = Math.max(0, (200 - distance) / 200) * 0.3;
-          
-          this.ctx.strokeStyle = `rgba(255, 215, 0, ${opacity})`;
-          this.ctx.lineWidth = 1;
-          this.ctx.beginPath();
-          this.ctx.moveTo(conn.star1.x, conn.star1.y);
-          this.ctx.lineTo(conn.star2.x, conn.star2.y);
-          this.ctx.stroke();
-        });
-        
-        // Draw stars
-        this.stars.forEach(star => {
-          const alpha = Math.max(0.1, star.life * (0.5 + 0.5 * Math.sin(star.twinkle)));
-          const currentSize = Math.max(1, star.size * star.life);
-          
-          // Draw star shape instead of circle
-          this.drawStar(star.x, star.y, currentSize, alpha);
-        });
-      }
-
-      drawStar(x, y, size, alpha) {
-        this.ctx.save();
-        this.ctx.translate(x, y);
-        this.ctx.rotate(Date.now() * 0.001);
-        
-        // Draw glow
-        const gradient = this.ctx.createRadialGradient(0, 0, 0, 0, 0, size * 4);
-        gradient.addColorStop(0, `rgba(255, 215, 0, ${alpha * 0.8})`);
-        gradient.addColorStop(0.5, `rgba(255, 215, 0, ${alpha * 0.4})`);
-        gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
-        
-        this.ctx.fillStyle = gradient;
-        this.ctx.fillRect(-size * 4, -size * 4, size * 8, size * 8);
-        
-        // Draw star shape
-        this.ctx.beginPath();
-        for (let i = 0; i < 10; i++) {
-          const angle = (i * Math.PI) / 5;
-          const radius = i % 2 === 0 ? size : size * 0.5;
-          const px = Math.cos(angle) * radius;
-          const py = Math.sin(angle) * radius;
-          
-          if (i === 0) {
-            this.ctx.moveTo(px, py);
-          } else {
-            this.ctx.lineTo(px, py);
-          }
-        }
-        this.ctx.closePath();
-        
-        // Fill star
-        this.ctx.fillStyle = `rgba(255, 215, 0, ${alpha})`;
-        this.ctx.fill();
-        
-        // Add white highlight
-        this.ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.6})`;
-        this.ctx.beginPath();
-        for (let i = 0; i < 10; i++) {
-          const angle = (i * Math.PI) / 5;
-          const radius = i % 2 === 0 ? size * 0.7 : size * 0.3;
-          const px = Math.cos(angle) * radius;
-          const py = Math.sin(angle) * radius;
-          
-          if (i === 0) {
-            this.ctx.moveTo(px, py);
-          } else {
-            this.ctx.lineTo(px, py);
-          }
-        }
-        this.ctx.closePath();
-        this.ctx.fill();
-        
-        this.ctx.restore();
-      }
-
-      animate() {
-        if (!this.isActive) return;
-        
-        this.updateStars();
-        this.draw();
-        this.animationId = requestAnimationFrame(() => this.animate());
-      }
-
-      start() {
-        this.isActive = true;
-        this.setupCanvas();
-        this.clearConstellation();
-        document.getElementById('constellationOverlay').classList.add('active');
-        this.animate();
-      }
-
-      stop() {
-        this.isActive = false;
-        if (this.animationId) {
-          cancelAnimationFrame(this.animationId);
-        }
-        document.getElementById('constellationOverlay').classList.remove('active');
-      }
-
-      clearConstellation() {
-        this.stars = [];
-        this.connections = [];
-        this.updateCounter();
-      }
-
-      updateCounter() {
-        const counter = document.getElementById('constellationCounter');
-        if (counter) {
-          counter.textContent = `Stars: ${this.stars.length}`;
-        }
-      }
-    }
-
-    let constellation;
+    });
 
     // Easter egg - Konami code
     let konamiCode = [];
-    const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+    const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
 
     document.addEventListener('keydown', (e) => {
       konamiCode.push(e.keyCode);
@@ -2561,63 +1749,6 @@
           document.body.style.filter = '';
           alert('🎮 Easter egg found! You have good attention to detail - perfect for debugging!');
         }, 2000);
-      }
-    });
-
-    // Main initialization block
-    document.addEventListener('DOMContentLoaded', () => {
-      createParticles();
-      createCursorEffects();
-      
-      if (isIOS) {
-        initializeIOSFeatures();
-        createMobileParticles();
-      }
-      
-      if (typeof THREE !== 'undefined') {
-        init3D();
-      }
-      
-      setupRevealAnimations();
-      setupFilters();
-      animateConsole();
-      
-      // Initialize constellation
-      constellation = new InteractiveConstellation();
-      
-      // Constellation controls
-      const constellationTrigger = document.getElementById('constellationTrigger');
-      const constellationClose = document.getElementById('constellationClose');
-      
-      if (constellationTrigger) {
-        constellationTrigger.addEventListener('click', () => {
-          constellation.start();
-        });
-      }
-      
-      if (constellationClose) {
-        constellationClose.addEventListener('click', () => {
-          constellation.stop();
-        });
-      }
-      
-      // Close constellation on escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && constellation.isActive) {
-          constellation.stop();
-        }
-      });
-      
-      if (!isIOS) {
-        document.querySelectorAll('.project-card').forEach(card => {
-          card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-12px) scale(1.02)';
-          });
-          
-          card.addEventListener('mouseleave', () => {
-            card.style.transform = 'translateY(0) scale(1)';
-          });
-        });
       }
     });
   </script>
