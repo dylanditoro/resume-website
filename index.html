@@ -53,12 +53,13 @@
     /* Animated background */
     .bg-animation {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: -10%;
+      left: -10%;
+      width: 120%;
+      height: 120%;
       z-index: -1;
       background: 
+        var(--bg),
         radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3), transparent 50%),
         radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3), transparent 50%),
         radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.2), transparent 50%);
@@ -1957,28 +1958,86 @@
 
     function requestDeviceMotionPermission() {
       if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // Create backdrop
+        const backdrop = document.createElement('div');
+        backdrop.style.position = 'fixed';
+        backdrop.style.top = '0';
+        backdrop.style.left = '0';
+        backdrop.style.width = '100%';
+        backdrop.style.height = '100%';
+        backdrop.style.background = 'rgba(0, 0, 0, 0.8)';
+        backdrop.style.backdropFilter = 'blur(10px)';
+        backdrop.style.zIndex = '9999';
+        backdrop.style.display = 'flex';
+        backdrop.style.alignItems = 'center';
+        backdrop.style.justifyContent = 'center';
+        backdrop.style.flexDirection = 'column';
+        backdrop.style.gap = '20px';
+        
+        // Create modal container
+        const modal = document.createElement('div');
+        modal.style.background = 'var(--card)';
+        modal.style.border = '2px solid var(--brand)';
+        modal.style.borderRadius = '20px';
+        modal.style.padding = '40px';
+        modal.style.textAlign = 'center';
+        modal.style.maxWidth = '90%';
+        modal.style.boxShadow = '0 20px 60px rgba(0, 212, 255, 0.3)';
+        
+        // Create title
+        const title = document.createElement('h3');
+        title.textContent = '📱 Enhanced iPhone Experience';
+        title.style.color = 'var(--brand)';
+        title.style.marginBottom = '16px';
+        title.style.fontSize = '1.5rem';
+        
+        // Create description
+        const desc = document.createElement('p');
+        desc.textContent = 'Enable device tilt to interact with 3D elements and constellation gravity!';
+        desc.style.color = 'var(--muted)';
+        desc.style.marginBottom = '24px';
+        desc.style.lineHeight = '1.6';
+        
         const motionBtn = document.createElement('button');
-        motionBtn.textContent = 'Enable Tilt Effects';
-        motionBtn.className = 'btn outline';
-        motionBtn.style.position = 'fixed';
-        motionBtn.style.top = '50%';
-        motionBtn.style.left = '50%';
-        motionBtn.style.transform = 'translate(-50%, -50%)';
-        motionBtn.style.zIndex = '10000';
+        motionBtn.textContent = '✨ Enable Tilt Effects';
+        motionBtn.className = 'btn';
+        motionBtn.style.fontSize = '1.1rem';
+        motionBtn.style.padding = '16px 32px';
+        
+        modal.appendChild(title);
+        modal.appendChild(desc);
+        modal.appendChild(motionBtn);
+        backdrop.appendChild(modal);
         
         motionBtn.addEventListener('click', () => {
           DeviceOrientationEvent.requestPermission().then(response => {
             if (response === 'granted') {
               enableDeviceMotion();
-              motionBtn.remove();
+              backdrop.remove();
+            } else {
+              // Show error message
+              desc.textContent = 'Permission denied. You can still use all other features!';
+              desc.style.color = 'var(--accent)';
+              motionBtn.textContent = 'Continue Without Tilt';
+              motionBtn.addEventListener('click', () => backdrop.remove());
             }
           });
         });
         
-        document.body.appendChild(motionBtn);
+        // Skip button
+        const skipBtn = document.createElement('button');
+        skipBtn.textContent = 'Skip';
+        skipBtn.className = 'btn ghost';
+        skipBtn.style.marginTop = '16px';
+        skipBtn.addEventListener('click', () => backdrop.remove());
+        modal.appendChild(skipBtn);
+        
+        document.body.appendChild(backdrop);
+        
+        // Auto-close after 5 seconds
         setTimeout(() => {
-          if (motionBtn.parentNode) motionBtn.remove();
-        }, 3000);
+          if (backdrop.parentNode) backdrop.remove();
+        }, 5000);
       } else {
         enableDeviceMotion();
       }
