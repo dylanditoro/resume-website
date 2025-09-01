@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Dylan Di Toro — Interactive Portfolio</title>
   <meta name="description" content="Portfolio of Dylan Di Toro — Computer Science student in Perth, WA."/>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>" />
@@ -48,6 +48,15 @@
       color: var(--fg);
       overflow-x: hidden;
       position: relative;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* iOS Safe Area Support */
+    .ios-safe {
+      padding-top: max(16px, env(safe-area-inset-top));
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
     }
 
     /* Animated background */
@@ -110,6 +119,31 @@
       }
     }
 
+    /* Mobile Touch Effects */
+    .touch-bubble {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, var(--brand), transparent);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .touch-bubble.active {
+      opacity: 0.6;
+      transform: scale(2);
+      animation: touchRipple 0.8s ease-out forwards;
+    }
+
+    @keyframes touchRipple {
+      0% { opacity: 0.6; transform: scale(0); }
+      50% { opacity: 0.4; transform: scale(1.5); }
+      100% { opacity: 0; transform: scale(2); }
+    }
+
     /* Cursor trail */
     .cursor-trail {
       position: absolute;
@@ -161,6 +195,60 @@
       }
     }
 
+    /* iPhone Haptic Effects */
+    .haptic-ready {
+      position: relative;
+    }
+
+    .haptic-ready::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(45deg, var(--brand), var(--purple));
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .haptic-active::after {
+      opacity: 0.3;
+      animation: hapticPulse 0.3s ease-out;
+    }
+
+    @keyframes hapticPulse {
+      0% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.05); opacity: 0.6; }
+      100% { transform: scale(1); opacity: 0.3; }
+    }
+
+    /* Shake animation */
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* Double tap zoom */
+    .zoom-area {
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .zoom-area.zoomed {
+      transform: scale(1.1);
+      z-index: 10;
+    }
+
+    /* Tilt effects for iOS */
+    .tilt-container {
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+    }
+
     /* Floating particles */
     .particles {
       position: fixed;
@@ -180,6 +268,17 @@
       border-radius: 50%;
       opacity: 0.5;
       animation: float 20s infinite;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .particle.interactive {
+      transition: all 0.3s ease;
+    }
+
+    .particle.interactive:active {
+      transform: scale(3) rotate(360deg);
+      opacity: 1;
     }
 
     @keyframes float {
@@ -340,6 +439,10 @@
       box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
       position: relative;
       overflow: hidden;
+      min-height: 44px; /* iOS touch target */
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     .btn::before {
@@ -468,6 +571,10 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      min-height: 44px;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     .chip::before {
@@ -856,6 +963,24 @@
       transform: rotate(180deg) scale(1.1);
     }
 
+    /* Swipe hint for mobile */
+    .swipe-hint {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 0.9rem;
+      opacity: 0.7;
+      animation: swipeHint 2s ease-in-out infinite;
+      display: none;
+    }
+
+    @keyframes swipeHint {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-5px); }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .header-content {
@@ -885,6 +1010,34 @@
 
       .cta-row {
         flex-direction: column;
+      }
+      
+      /* Mobile-specific enhancements */
+      .project-card {
+        border-radius: 16px;
+        margin-bottom: 16px;
+      }
+      
+      .btn {
+        min-height: 44px;
+        padding: 12px 24px;
+      }
+      
+      .chip {
+        min-height: 44px;
+        padding: 12px 20px;
+      }
+      
+      /* Show swipe hint on mobile */
+      .swipe-hint {
+        display: block;
+      }
+      
+      /* Touch-friendly particle effects */
+      .particle {
+        width: 4px;
+        height: 4px;
+        pointer-events: auto;
       }
     }
 
@@ -920,9 +1073,37 @@
       opacity: 0;
       pointer-events: none;
     }
+
+    /* Device motion permission button */
+    .motion-permission {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10000;
+      background: var(--card);
+      border: 2px solid var(--brand);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .motion-permission h3 {
+      margin-bottom: 16px;
+      background: linear-gradient(45deg, var(--brand), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .motion-permission p {
+      margin-bottom: 20px;
+      color: var(--muted);
+    }
   </style>
 </head>
-<body>
+<body class="ios-safe">
   <!-- Loading Screen -->
   <div class="loading" id="loading">
     <div class="loading-spinner"></div>
@@ -939,7 +1120,7 @@
   <div class="cursor-effects" id="cursorEffects"></div>
 
   <!-- Header -->
-  <header class="site-header" id="header">
+  <header class="site-header ios-safe" id="header">
     <div class="header-content">
       <div class="brand">
         <h1>Dylan Di Toro</h1>
@@ -950,7 +1131,7 @@
         <a href="#projects">Projects</a>
         <a href="#skills">Skills</a>
         <a href="#contact">Contact</a>
-        <button id="themeToggle" class="btn ghost" aria-label="Toggle theme">🌓</button>
+        <button id="themeToggle" class="btn ghost haptic-ready" aria-label="Toggle theme">🌓</button>
       </nav>
     </div>
   </header>
@@ -963,21 +1144,22 @@
         <h2>Building the Future</h2>
         <p>I'm a CS student passionate about creating innovative software solutions. From elegant algorithms to immersive web experiences, I love turning complex problems into simple, beautiful code.</p>
         <div class="cta-row">
-          <a class="btn" href="https://github.com/dylanditoro" target="_blank" rel="noopener">
+          <a class="btn haptic-ready" href="https://github.com/dylanditoro" target="_blank" rel="noopener">
             🚀 Explore GitHub
           </a>
-          <a class="btn outline" href="#projects">
+          <a class="btn outline haptic-ready" href="#projects">
             💡 View Projects
           </a>
         </div>
       </div>
     </div>
+    <div class="swipe-hint">← Swipe to navigate filters →</div>
   </section>
 
   <main class="container">
     <!-- About -->
     <section id="about" class="section">
-      <div class="card">
+      <div class="card tilt-container">
         <h3>About Me</h3>
         <p style="font-size: 1.1rem; color: var(--fg); margin-bottom: 24px;">
           Currently pursuing Computer Science at ECU with a focus on software engineering, cybersecurity, and systems design. I'm passionate about building efficient, scalable solutions and have hands-on experience with modern development practices.
@@ -1008,17 +1190,17 @@
       <div class="section-head">
         <h3>Featured Projects</h3>
         <div class="filters" aria-label="Project filters">
-          <button class="chip is-active" data-filter="all">All</button>
-          <button class="chip" data-filter="python">Python</button>
-          <button class="chip" data-filter="sql">SQL</button>
-          <button class="chip" data-filter="web">Web</button>
-          <button class="chip" data-filter="ai">AI/ML</button>
+          <button class="chip is-active haptic-ready" data-filter="all">All</button>
+          <button class="chip haptic-ready" data-filter="python">Python</button>
+          <button class="chip haptic-ready" data-filter="sql">SQL</button>
+          <button class="chip haptic-ready" data-filter="web">Web</button>
+          <button class="chip haptic-ready" data-filter="ai">AI/ML</button>
         </div>
       </div>
 
       <ul class="projects-grid">
         <!-- Enhanced To-Do App -->
-        <li class="project-card" data-tags="python,web">
+        <li class="project-card tilt-container zoom-area" data-tags="python,web">
           <div class="project-header">
             <div class="project-icon">📝</div>
           </div>
@@ -1032,14 +1214,14 @@
               <span class="tag">NLP</span>
             </div>
             <div class="actions">
-              <a class="btn small" href="#" onclick="showDemo('todo')">Live Demo</a>
-              <a class="btn small outline" href="https://github.com/dylanditoro/smart-task-manager" target="_blank">GitHub</a>
+              <a class="btn small haptic-ready" href="#" onclick="showDemo('todo')">Live Demo</a>
+              <a class="btn small outline haptic-ready" href="https://github.com/dylanditoro/smart-task-manager" target="_blank">GitHub</a>
             </div>
           </div>
         </li>
 
         <!-- Network Security Tool -->
-        <li class="project-card" data-tags="python,security">
+        <li class="project-card tilt-container zoom-area" data-tags="python,security">
           <div class="project-header">
             <div class="project-icon">🛡️</div>
           </div>
@@ -1053,14 +1235,14 @@
               <span class="tag">Wireshark</span>
             </div>
             <div class="actions">
-              <a class="btn small" href="#" onclick="showDemo('security')">View Demo</a>
-              <a class="btn small outline" href="https://github.com/dylanditoro/network-scanner" target="_blank">GitHub</a>
+              <a class="btn small haptic-ready" href="#" onclick="showDemo('security')">View Demo</a>
+              <a class="btn small outline haptic-ready" href="https://github.com/dylanditoro/network-scanner" target="_blank">GitHub</a>
             </div>
           </div>
         </li>
 
         <!-- SQL Analytics Platform -->
-        <li class="project-card" data-tags="sql,web">
+        <li class="project-card tilt-container zoom-area" data-tags="sql,web">
           <div class="project-header">
             <div class="project-icon">📊</div>
           </div>
@@ -1074,14 +1256,14 @@
               <span class="tag">Flask</span>
             </div>
             <div class="actions">
-              <a class="btn small" href="#" onclick="showDemo('analytics')">Live Demo</a>
-              <a class="btn small outline" href="https://github.com/dylanditoro/sql-analytics-dashboard" target="_blank">GitHub</a>
+              <a class="btn small haptic-ready" href="#" onclick="showDemo('analytics')">Live Demo</a>
+              <a class="btn small outline haptic-ready" href="https://github.com/dylanditoro/sql-analytics-dashboard" target="_blank">GitHub</a>
             </div>
           </div>
         </li>
 
         <!-- Portfolio Website -->
-        <li class="project-card" data-tags="web">
+        <li class="project-card tilt-container zoom-area" data-tags="web">
           <div class="project-header">
             <div class="project-icon">🎨</div>
           </div>
@@ -1095,14 +1277,14 @@
               <span class="tag">CSS</span>
             </div>
             <div class="actions">
-              <a class="btn small" href="#contact">Contact Me</a>
-              <a class="btn small outline" href="https://github.com/dylanditoro/portfolio" target="_blank">Source</a>
+              <a class="btn small haptic-ready" href="#contact">Contact Me</a>
+              <a class="btn small outline haptic-ready" href="https://github.com/dylanditoro/portfolio" target="_blank">Source</a>
             </div>
           </div>
         </li>
 
         <!-- AI Project -->
-        <li class="project-card" data-tags="ai,python">
+        <li class="project-card tilt-container zoom-area" data-tags="ai,python">
           <div class="project-header">
             <div class="project-icon">🤖</div>
           </div>
@@ -1116,8 +1298,8 @@
               <span class="tag">Data Science</span>
             </div>
             <div class="actions">
-              <a class="btn small" href="#" onclick="showDemo('ai')">Demo Video</a>
-              <a class="btn small outline" href="https://github.com/dylanditoro/campus-nav-ai" target="_blank">GitHub</a>
+              <a class="btn small haptic-ready" href="#" onclick="showDemo('ai')">Demo Video</a>
+              <a class="btn small outline haptic-ready" href="https://github.com/dylanditoro/campus-nav-ai" target="_blank">GitHub</a>
             </div>
           </div>
         </li>
@@ -1126,11 +1308,11 @@
 
     <!-- Skills -->
     <section id="skills" class="section">
-      <div class="card">
+      <div class="card tilt-container">
         <h3>Technical Expertise</h3>
         <div class="skills-grid">
           <!-- Programming Languages -->
-          <div class="skill-category">
+          <div class="skill-category zoom-area">
             <h4>🔧 Languages & Frameworks</h4>
             <div class="skill-bars">
               <div class="skill-bar">
@@ -1161,7 +1343,7 @@
           </div>
 
           <!-- Tools & Technologies -->
-          <div class="skill-category">
+          <div class="skill-category zoom-area">
             <h4>⚡ Tools & Platforms</h4>
             <div class="skill-bars">
               <div class="skill-bar">
@@ -1196,7 +1378,7 @@
 
     <!-- Experience Timeline -->
     <section id="experience" class="section">
-      <div class="card">
+      <div class="card tilt-container">
         <h3>Experience & Education</h3>
         <div style="margin-top: 32px; display: grid; gap: 24px;">
           <div style="padding: 24px; border-left: 3px solid var(--brand); background: rgba(0, 212, 255, 0.05); border-radius: 0 12px 12px 0;">
@@ -1215,7 +1397,7 @@
 
     <!-- Contact -->
     <section id="contact" class="section">
-      <div class="card">
+      <div class="card tilt-container">
         <h3>Let's Connect</h3>
         <p style="font-size: 1.1rem; margin-bottom: 24px;">Ready to discuss opportunities, collaborate on projects, or just chat about technology.</p>
         
@@ -1230,8 +1412,8 @@
             <textarea name="message" rows="4" placeholder="Your message" required></textarea>
           </div>
           <div class="cta-row">
-            <button class="btn" type="submit">🚀 Send Message</button>
-            <button class="btn outline" type="button" id="copyEmail">📧 Copy Email</button>
+            <button class="btn haptic-ready" type="submit">🚀 Send Message</button>
+            <button class="btn outline haptic-ready" type="button" id="copyEmail">📧 Copy Email</button>
           </div>
         </form>
         <small id="copied" class="muted" style="margin-top: 12px; display: block;" role="status" aria-live="polite"></small>
@@ -1248,10 +1430,18 @@
     </section>
   </main>
 
-  <button id="toTop" class="to-top" aria-label="Back to top">↑</button>
+  <button id="toTop" class="to-top haptic-ready" aria-label="Back to top">↑</button>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
+    // Global variables
+    let scene, camera, renderer;
+    let mouseX = 0, mouseY = 0;
+    let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    let deviceMotionEnabled = false;
+    let touchStartTime = 0;
+    let currentFilter = 'all';
+
     // Loading screen
     window.addEventListener('load', () => {
       setTimeout(() => {
@@ -1262,28 +1452,43 @@
     // Create particles
     function createParticles() {
       const particlesContainer = document.getElementById('particles');
-      for (let i = 0; i < 50; i++) {
+      const particleCount = isIOS ? 25 : 50; // Fewer particles on mobile
+      
+      for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
-        particle.className = 'particle';
+        particle.className = isIOS ? 'particle interactive' : 'particle';
         particle.style.left = Math.random() * 100 + '%';
         particle.style.animationDelay = Math.random() * 20 + 's';
         particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        
+        // Add touch interaction for iOS
+        if (isIOS) {
+          particle.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            particle.style.animation = 'none';
+            particle.style.transform = 'scale(3) rotate(360deg)';
+            particle.style.opacity = '1';
+            triggerHapticFeedback(particle);
+            
+            setTimeout(() => {
+              particle.style.animation = '';
+              particle.style.transform = '';
+              particle.style.opacity = '';
+            }, 1000);
+          }, { passive: false });
+        }
+        
         particlesContainer.appendChild(particle);
       }
     }
 
-    // Interactive Cursor Effects
-    let mouseX = 0, mouseY = 0;
-    let cursorTrails = [];
-    let bubbles = [];
-    let isMouseMoving = false;
-    let mouseTimeout;
-
+    // Cursor effects for desktop
     function createCursorEffects() {
+      if (isIOS) return; // Skip for mobile
+      
       const cursorContainer = document.getElementById('cursorEffects');
       if (!cursorContainer) return;
 
-      // Create bubble on mouse movement
       function createBubble(x, y) {
         const bubble = document.createElement('div');
         bubble.className = 'cursor-bubble';
@@ -1298,18 +1503,14 @@
         bubble.style.top = (y - size/2) + 'px';
         bubble.style.background = `radial-gradient(circle, ${color}, transparent)`;
         
-        // Set random movement direction
         const randomX = (Math.random() - 0.5) * 200;
         const randomY = -(Math.random() * 150 + 50);
         bubble.style.setProperty('--random-x', randomX + 'px');
         bubble.style.setProperty('--random-y', randomY + 'px');
         
         cursorContainer.appendChild(bubble);
-        
-        // Activate animation
         setTimeout(() => bubble.classList.add('active'), 10);
         
-        // Remove after animation
         setTimeout(() => {
           if (bubble.parentNode) {
             bubble.parentNode.removeChild(bubble);
@@ -1317,7 +1518,6 @@
         }, 4000);
       }
 
-      // Create cursor trail
       function createCursorTrail(x, y) {
         const trail = document.createElement('div');
         trail.className = 'cursor-trail';
@@ -1325,7 +1525,6 @@
         trail.style.top = y + 'px';
         
         cursorContainer.appendChild(trail);
-        
         setTimeout(() => trail.classList.add('active'), 10);
         
         setTimeout(() => {
@@ -1335,7 +1534,6 @@
         }, 1000);
       }
 
-      // Create ripple effect on click
       function createRipple(x, y) {
         const ripple = document.createElement('div');
         ripple.className = 'ripple';
@@ -1351,34 +1549,22 @@
         }, 600);
       }
 
-      // Mouse move handler
       let bubbleCounter = 0;
       document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-        isMouseMoving = true;
         
-        // Clear timeout
-        clearTimeout(mouseTimeout);
-        mouseTimeout = setTimeout(() => {
-          isMouseMoving = false;
-        }, 100);
-        
-        // Create cursor trail more frequently
         createCursorTrail(mouseX, mouseY);
         
-        // Create bubbles less frequently for performance
         bubbleCounter++;
-        if (bubbleCounter % 8 === 0) { // Create bubble every 8 mouse moves
+        if (bubbleCounter % 8 === 0) {
           createBubble(mouseX, mouseY);
         }
       });
 
-      // Click handler for ripples
       document.addEventListener('click', (e) => {
         createRipple(e.clientX, e.clientY);
         
-        // Create extra bubbles on click
         for (let i = 0; i < 3; i++) {
           setTimeout(() => {
             createBubble(
@@ -1388,41 +1574,221 @@
           }, i * 100);
         }
       });
+    }
 
-      // Add magnetic effect to interactive elements
-      const interactiveElements = document.querySelectorAll('.btn, .chip, .project-card');
-      interactiveElements.forEach(element => {
-        element.addEventListener('mouseenter', (e) => {
-          const rect = element.getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
-          
-          // Create attraction bubbles
-          for (let i = 0; i < 5; i++) {
-            setTimeout(() => {
-              createBubble(
-                centerX + (Math.random() - 0.5) * rect.width,
-                centerY + (Math.random() - 0.5) * rect.height
-              );
-            }, i * 50);
+    // Touch effects for iOS
+    function createTouchEffects() {
+      if (!isIOS) return;
+      
+      const touchContainer = document.getElementById('cursorEffects');
+      
+      function createTouchRipple(x, y) {
+        const ripple = document.createElement('div');
+        ripple.className = 'touch-bubble';
+        ripple.style.left = (x - 30) + 'px';
+        ripple.style.top = (y - 30) + 'px';
+        
+        touchContainer.appendChild(ripple);
+        setTimeout(() => ripple.classList.add('active'), 10);
+        
+        setTimeout(() => {
+          if (ripple.parentNode) {
+            ripple.parentNode.removeChild(ripple);
           }
+        }, 800);
+      }
+      
+      document.addEventListener('touchstart', (e) => {
+        Array.from(e.touches).forEach(touch => {
+          createTouchRipple(touch.clientX, touch.clientY);
+        });
+        touchStartTime = Date.now();
+      }, { passive: true });
+    }
+
+    // Device motion for iOS
+    function initializeDeviceMotion() {
+      if (!isIOS) return;
+      
+      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // iOS 13+ - need permission
+        const motionDiv = document.createElement('div');
+        motionDiv.className = 'motion-permission';
+        motionDiv.innerHTML = `
+          <h3>🎮 Enable Tilt Effects</h3>
+          <p>Allow device motion to make cards tilt with your phone!</p>
+          <button class="btn haptic-ready" id="enableMotion">Enable Tilt Effects</button>
+          <button class="btn outline haptic-ready" id="skipMotion">Skip</button>
+        `;
+        
+        document.body.appendChild(motionDiv);
+        
+        document.getElementById('enableMotion').addEventListener('click', () => {
+          DeviceOrientationEvent.requestPermission().then(response => {
+            if (response === 'granted') {
+              enableDeviceMotion();
+            }
+            motionDiv.remove();
+          });
+        });
+        
+        document.getElementById('skipMotion').addEventListener('click', () => {
+          motionDiv.remove();
+        });
+        
+        setTimeout(() => {
+          if (motionDiv.parentNode) motionDiv.remove();
+        }, 8000);
+      } else {
+        // iOS 12 and below - no permission needed
+        enableDeviceMotion();
+      }
+    }
+
+    function enableDeviceMotion() {
+      deviceMotionEnabled = true;
+      
+      window.addEventListener('deviceorientation', (event) => {
+        const { alpha, beta, gamma } = event;
+        
+        document.querySelectorAll('.tilt-container').forEach(card => {
+          const tiltX = gamma ? gamma * 0.1 : 0;
+          const tiltY = beta ? (beta - 90) * 0.1 : 0;
+          
+          card.style.transform = `perspective(1000px) rotateX(${tiltY}deg) rotateY(${tiltX}deg)`;
+        });
+        
+        if (scene && camera) {
+          camera.position.x += (gamma * 0.001 - camera.position.x) * 0.1;
+          camera.position.y += (beta * 0.001 - camera.position.y) * 0.1;
+        }
+      });
+    }
+
+    // Swipe gestures for iOS
+    function initializeSwipeGestures() {
+      if (!isIOS) return;
+      
+      let startX = 0;
+      let startY = 0;
+      const filters = ['all', 'python', 'sql', 'web', 'ai'];
+      
+      document.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+      
+      document.addEventListener('touchend', (e) => {
+        if (!startX || !startY) return;
+        
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+        
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+        
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 80) {
+          const currentIndex = filters.indexOf(currentFilter);
+          let newIndex;
+          
+          if (deltaX > 0) {
+            newIndex = currentIndex > 0 ? currentIndex - 1 : filters.length - 1;
+          } else {
+            newIndex = currentIndex < filters.length - 1 ? currentIndex + 1 : 0;
+          }
+          
+          currentFilter = filters[newIndex];
+          
+          const filterBtn = document.querySelector(`[data-filter="${currentFilter}"]`);
+          if (filterBtn) {
+            filterBtn.click();
+            filterBtn.classList.add('shake');
+            triggerHapticFeedback(filterBtn);
+            setTimeout(() => filterBtn.classList.remove('shake'), 500);
+          }
+        }
+        
+        startX = 0;
+        startY = 0;
+      }, { passive: true });
+    }
+
+    // Double tap to zoom
+    function initializeDoubleTapZoom() {
+      if (!isIOS) return;
+      
+      document.querySelectorAll('.zoom-area').forEach(element => {
+        let lastTap = 0;
+        
+        element.addEventListener('touchend', (e) => {
+          const currentTime = Date.now();
+          const tapGap = currentTime - lastTap;
+          
+          if (tapGap < 300 && tapGap > 0) {
+            e.preventDefault();
+            
+            element.classList.toggle('zoomed');
+            triggerHapticFeedback(element);
+            
+            setTimeout(() => {
+              element.classList.remove('zoomed');
+            }, 3000);
+          }
+          
+          lastTap = currentTime;
         });
       });
     }
 
-    // Enhanced 3D Scene Setup with mouse interaction
-    let scene, camera, renderer, geometry, material, mesh;
+    // Haptic feedback
+    function triggerHapticFeedback(element) {
+      element.classList.add('haptic-active');
+      setTimeout(() => element.classList.remove('haptic-active'), 300);
+      
+      // Try to trigger actual haptic feedback
+      if (navigator.vibrate) {
+        navigator.vibrate(10);
+      }
+      
+      // Audio haptic simulation
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.01, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05);
+        
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.05);
+      } catch (e) {
+        // Audio context not supported
+      }
+    }
 
+    // Add haptic class to interactive elements
+    function initializeHapticElements() {
+      document.querySelectorAll('.haptic-ready').forEach(element => {
+        element.addEventListener('touchstart', () => {
+          triggerHapticFeedback(element);
+        }, { passive: true });
+      });
+    }
+
+    // 3D Scene Setup
     function init3D() {
       const canvas = document.getElementById('scene');
-      if (!canvas) return;
+      if (!canvas || typeof THREE === 'undefined') return;
       
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
       renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
 
-      // Create floating geometry
       const geometries = [
         new THREE.BoxGeometry(1, 1, 1),
         new THREE.SphereGeometry(0.7, 32, 32),
@@ -1447,7 +1813,6 @@
         mesh.rotation.x = Math.random() * Math.PI;
         mesh.rotation.y = Math.random() * Math.PI;
         
-        // Store original position for mouse interaction
         mesh.userData.originalX = mesh.position.x;
         mesh.userData.originalY = mesh.position.y;
         mesh.userData.originalZ = mesh.position.z;
@@ -1466,25 +1831,11 @@
           obj.rotation.y += 0.01 + index * 0.001;
           obj.position.y += Math.sin(Date.now() * 0.001 + index) * 0.001;
           
-          // Mouse interaction - objects move away from cursor
-          if (isMouseMoving) {
-            const mouseInfluence = 0.02;
-            const normalizedMouseX = (mouseX / window.innerWidth - 0.5) * 2;
-            const normalizedMouseY = -(mouseY / window.innerHeight - 0.5) * 2;
-            
-            const distanceX = obj.userData.originalX - normalizedMouseX * 10;
-            const distanceY = obj.userData.originalY - normalizedMouseY * 10;
-            
-            obj.position.x += (distanceX - obj.position.x) * mouseInfluence;
-            obj.position.y += (distanceY - obj.position.y) * mouseInfluence;
-          } else {
-            // Return to original position
-            obj.position.x += (obj.userData.originalX - obj.position.x) * 0.02;
-            obj.position.y += (obj.userData.originalY - obj.position.y) * 0.02;
-          }
+          // Return to original position when not interacting
+          obj.position.x += (obj.userData.originalX - obj.position.x) * 0.02;
+          obj.position.y += (obj.userData.originalY - obj.position.y) * 0.02;
         });
 
-        // Smooth camera movement based on mouse
         const targetX = mouseX * 0.001;
         const targetY = -mouseY * 0.001;
         camera.position.x += (targetX - camera.position.x) * 0.05;
@@ -1495,12 +1846,6 @@
       }
       animate();
     }
-
-    // Mouse interaction - removed duplicate
-    document.addEventListener('mousemove', (e) => {
-      // This is now handled in createCursorEffects()
-      // Keep this for 3D scene but mouseX, mouseY are set in cursor effects
-    });
 
     // Window resize
     window.addEventListener('resize', () => {
@@ -1530,7 +1875,6 @@
       if (!consoleBody) return;
       
       let index = 0;
-
       function typeLine() {
         if (index < lines.length) {
           const line = lines[index];
@@ -1549,7 +1893,6 @@
           setTimeout(typeLine, 800);
         }
       }
-      
       setTimeout(typeLine, 1000);
     }
 
@@ -1581,7 +1924,6 @@
           if (entry.isIntersecting) {
             entry.target.classList.add('revealed');
             
-            // Animate skill bars when skills section is revealed
             if (entry.target.id === 'skills') {
               setTimeout(() => {
                 const skillFills = entry.target.querySelectorAll('.skill-fill');
@@ -1608,6 +1950,8 @@
         chip.classList.add('is-active');
         
         const filter = chip.dataset.filter;
+        currentFilter = filter;
+        
         cards.forEach(card => {
           const tags = card.dataset.tags.split(',');
           const shouldShow = filter === 'all' || tags.includes(filter);
@@ -1711,9 +2055,17 @@
     // Initialize everything
     document.addEventListener('DOMContentLoaded', () => {
       createParticles();
-      createCursorEffects(); // Initialize cursor effects
       
-      // Check if Three.js is available before initializing 3D
+      if (isIOS) {
+        createTouchEffects();
+        initializeDeviceMotion();
+        initializeSwipeGestures();
+        initializeDoubleTapZoom();
+        initializeHapticElements();
+      } else {
+        createCursorEffects();
+      }
+      
       if (typeof THREE !== 'undefined') {
         init3D();
       }
@@ -1722,21 +2074,23 @@
       setupFilters();
       animateConsole();
       
-      // Add some interactive hover effects
-      document.querySelectorAll('.project-card').forEach(card => {
-        card.addEventListener('mouseenter', () => {
-          card.style.transform = 'translateY(-12px) scale(1.02)';
+      // Desktop hover effects
+      if (!isIOS) {
+        document.querySelectorAll('.project-card').forEach(card => {
+          card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-12px) scale(1.02)';
+          });
+          
+          card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0) scale(1)';
+          });
         });
-        
-        card.addEventListener('mouseleave', () => {
-          card.style.transform = 'translateY(0) scale(1)';
-        });
-      });
+      }
     });
 
     // Easter egg - Konami code
     let konamiCode = [];
-    const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
+    const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
 
     document.addEventListener('keydown', (e) => {
       konamiCode.push(e.keyCode);
