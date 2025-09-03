@@ -1496,86 +1496,93 @@
     let scene, camera, renderer, geometry, material, mesh;
 
     function init3D() {
-      const canvas = document.getElementById('scene');
-      if (!canvas) return;
-      
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      try {
+        const canvas = document.getElementById('scene');
+        if (!canvas) return;
+        
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
 
-      // Create floating geometry
-      const geometries = [
-        new THREE.BoxGeometry(1, 1, 1),
-        new THREE.SphereGeometry(0.7, 32, 32),
-        new THREE.ConeGeometry(0.7, 1.5, 8)
-      ];
+        // Create floating geometry
+        const geometries = [
+          new THREE.BoxGeometry(1, 1, 1),
+          new THREE.SphereGeometry(0.7, 32, 32),
+          new THREE.ConeGeometry(0.7, 1.5, 8)
+        ];
 
-      const objects = [];
-      for (let i = 0; i < 15; i++) {
-        const geometry = geometries[Math.floor(Math.random() * geometries.length)];
-        const material = new THREE.MeshBasicMaterial({ 
-          color: i % 3 === 0 ? 0x00d4ff : i % 3 === 1 ? 0x8b5cf6 : 0xff6b6b,
-          transparent: true,
-          opacity: 0.6,
-          wireframe: true
-        });
-        const mesh = new THREE.Mesh(geometry, material);
-        
-        mesh.position.x = (Math.random() - 0.5) * 20;
-        mesh.position.y = (Math.random() - 0.5) * 20;
-        mesh.position.z = (Math.random() - 0.5) * 20;
-        
-        mesh.rotation.x = Math.random() * Math.PI;
-        mesh.rotation.y = Math.random() * Math.PI;
-        
-        // Store original position for mouse interaction
-        mesh.userData.originalX = mesh.position.x;
-        mesh.userData.originalY = mesh.position.y;
-        mesh.userData.originalZ = mesh.position.z;
-        
-        scene.add(mesh);
-        objects.push(mesh);
-      }
-
-      camera.position.z = 15;
-
-      function animate() {
-        requestAnimationFrame(animate);
-        
-        objects.forEach((obj, index) => {
-          obj.rotation.x += 0.01 + index * 0.001;
-          obj.rotation.y += 0.01 + index * 0.001;
-          obj.position.y += Math.sin(Date.now() * 0.001 + index) * 0.001;
+        const objects = [];
+        for (let i = 0; i < 15; i++) {
+          const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+          const material = new THREE.MeshBasicMaterial({ 
+            color: i % 3 === 0 ? 0x00d4ff : i % 3 === 1 ? 0x8b5cf6 : 0xff6b6b,
+            transparent: true,
+            opacity: 0.6,
+            wireframe: true
+          });
+          const mesh = new THREE.Mesh(geometry, material);
           
-          // Mouse interaction - objects move away from cursor
-          if (isMouseMoving) {
-            const mouseInfluence = 0.02;
-            const normalizedMouseX = (mouseX / window.innerWidth - 0.5) * 2;
-            const normalizedMouseY = -(mouseY / window.innerHeight - 0.5) * 2;
-            
-            const distanceX = obj.userData.originalX - normalizedMouseX * 10;
-            const distanceY = obj.userData.originalY - normalizedMouseY * 10;
-            
-            obj.position.x += (distanceX - obj.position.x) * mouseInfluence;
-            obj.position.y += (distanceY - obj.position.y) * mouseInfluence;
-          } else {
-            // Return to original position
-            obj.position.x += (obj.userData.originalX - obj.position.x) * 0.02;
-            obj.position.y += (obj.userData.originalY - obj.position.y) * 0.02;
-          }
-        });
+          mesh.position.x = (Math.random() - 0.5) * 20;
+          mesh.position.y = (Math.random() - 0.5) * 20;
+          mesh.position.z = (Math.random() - 0.5) * 20;
+          
+          mesh.rotation.x = Math.random() * Math.PI;
+          mesh.rotation.y = Math.random() * Math.PI;
+          
+          // Store original position for mouse interaction
+          mesh.userData.originalX = mesh.position.x;
+          mesh.userData.originalY = mesh.position.y;
+          mesh.userData.originalZ = mesh.position.z;
+          
+          scene.add(mesh);
+          objects.push(mesh);
+        }
 
-        // Smooth camera movement based on mouse
-        const targetX = mouseX * 0.001;
-        const targetY = -mouseY * 0.001;
-        camera.position.x += (targetX - camera.position.x) * 0.05;
-        camera.position.y += (targetY - camera.position.y) * 0.05;
-        camera.lookAt(scene.position);
+        camera.position.z = 15;
 
-        renderer.render(scene, camera);
+        function animate() {
+          requestAnimationFrame(animate);
+          
+          objects.forEach((obj, index) => {
+            obj.rotation.x += 0.01 + index * 0.001;
+            obj.rotation.y += 0.01 + index * 0.001;
+            obj.position.y += Math.sin(Date.now() * 0.001 + index) * 0.001;
+            
+            // Mouse interaction - objects move away from cursor
+            if (isMouseMoving) {
+              const mouseInfluence = 0.02;
+              const normalizedMouseX = (mouseX / window.innerWidth - 0.5) * 2;
+              const normalizedMouseY = -(mouseY / window.innerHeight - 0.5) * 2;
+              
+              const distanceX = obj.userData.originalX - normalizedMouseX * 10;
+              const distanceY = obj.userData.originalY - normalizedMouseY * 10;
+              
+              obj.position.x += (distanceX - obj.position.x) * mouseInfluence;
+              obj.position.y += (distanceY - obj.position.y) * mouseInfluence;
+            } else {
+              // Return to original position
+              obj.position.x += (obj.userData.originalX - obj.position.x) * 0.02;
+              obj.position.y += (obj.userData.originalY - obj.position.y) * 0.02;
+            }
+          });
+
+          // Smooth camera movement based on mouse
+          const targetX = mouseX * 0.001;
+          const targetY = -mouseY * 0.001;
+          camera.position.x += (targetX - camera.position.x) * 0.05;
+          camera.position.y += (targetY - camera.position.y) * 0.05;
+          camera.lookAt(scene.position);
+
+          renderer.render(scene, camera);
+        }
+        animate();
+      } catch (error) {
+        console.error('3D scene initialization failed:', error);
+        // Hide the canvas if 3D fails
+        const canvas = document.getElementById('scene');
+        if (canvas) canvas.style.display = 'none';
       }
-      animate();
     }
 
     // Window resize
